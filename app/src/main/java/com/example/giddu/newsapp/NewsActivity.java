@@ -1,5 +1,6 @@
 package com.example.giddu.newsapp;
 
+import android.app.ActionBar;
 import android.app.LoaderManager;
 import android.content.Context;
 import android.content.Intent;
@@ -67,6 +68,13 @@ public class NewsActivity extends AppCompatActivity
             emptyTextView.setText("No Internet Connection");
         }
 
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            // Show the Up button in the action bar.
+            actionBar.setDisplayShowHomeEnabled(true);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+
 
 
 
@@ -75,7 +83,7 @@ public class NewsActivity extends AppCompatActivity
     @Override
     public Loader<List<NewsItem>> onCreateLoader(int id, Bundle args) {
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
 
         String topic = sharedPrefs.getString(
                 getString(R.string.settings_topic_key),
@@ -120,7 +128,17 @@ public class NewsActivity extends AppCompatActivity
             startActivity(settingsIntent);
             return true;
         }
+        if (id == android.R.id.home){
+            super.onBackPressed();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
-    
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getLoaderManager().restartLoader(1,null, this);
+    }
 }
